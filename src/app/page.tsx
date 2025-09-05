@@ -3,10 +3,12 @@
 import { motion } from "framer-motion";
 import {
   Github, Linkedin, Mail, Phone, MapPin, Download,
-  Code, Palette, Database, Smartphone, Globe, ArrowRight,
+  Code, ArrowRight,
   Star, ExternalLink, ChevronDown, Send, Menu, X
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import saif from "@/saif.jpg";
 
 // Floating Particles Component
 const FloatingParticles = () => {
@@ -39,6 +41,65 @@ const FloatingParticles = () => {
   );
 };
 
+// Skills Section (concise badges)
+const SkillsSection = () => {
+  const categories: { title: string; items: string[] }[] = [
+    { title: "Programming Languages", items: ["Python", "Java", "JavaScript", "PHP"] },
+    { title: "Web Development", items: ["React", "Angular", "Ionic", "CSS", "Tailwind CSS", "Bootstrap"] },
+    { title: "APIs", items: ["REST", "SOAP"] },
+    { title: "Databases", items: ["MySQL", "Firebase"] },
+    { title: "Methodologies", items: ["Scrum (Agile)"] },
+    { title: "Mobile", items: ["Flutter", "Android Studio"] },
+    { title: "Embedded Systems", items: ["Arduino", "Raspberry Pi", "ESP32/ESP8266"] },
+  ];
+
+  return (
+    <section id="skills" className="py-16 sm:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-12 sm:mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            My <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">Skills</span>
+          </h2>
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4">
+            A curated selection of tools and technologies I work with
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {categories.map((cat, idx) => (
+            <motion.div
+              key={cat.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: idx * 0.05 }}
+              viewport={{ once: true }}
+              className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-5 sm:p-6 border border-gray-800 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all"
+            >
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">{cat.title}</h3>
+              <div className="flex flex-wrap gap-2">
+                {cat.items.map((item) => (
+                  <span
+                    key={item}
+                    className="px-3 py-1 rounded-full text-xs sm:text-sm bg-gray-800 text-gray-200 border border-gray-700 hover:border-purple-500/60 hover:text-white transition-colors"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // Navigation
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,7 +111,7 @@ const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = ["Home", "About", "Projects", "Skills", "Contact"];
+  const navItems = ["Home", "About", "Skills", "Projects", "Contact"];
 
   return (
     <motion.nav
@@ -69,7 +130,7 @@ const Navigation = () => {
             className="text-lg sm:text-xl lg:text-2xl font-bold"
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
-              Portfolio
+              Seif Eddine BOUSSAID
             </span>
           </motion.div>
 
@@ -146,10 +207,19 @@ const HeroSection = () => (
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight"
         >
-          <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
-            Creative
-          </span>
-          <span className="block text-white">Developer</span>
+          {/* Accessible heading text (visually hidden) */}
+          <span className="sr-only">Boussaid Seif Eddine — Creative Developer</span>
+          {/* Profile image shown in place of the heading words */}
+          <div className="flex justify-center">
+            <Image
+              src={saif}
+              alt="Boussaid Seif Eddine"
+              width={240}
+              height={240}
+              priority
+              className="rounded-full shadow-lg shadow-purple-500/25 ring-2 ring-white/10 w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 xl:w-60 xl:h-60 object-cover"
+            />
+          </div>
         </motion.h1>
 
         <motion.p
@@ -175,13 +245,15 @@ const HeroSection = () => (
             View My Work <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </motion.button>
 
-          <motion.button
+          <motion.a
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            href="/cv.pdf"
+            download
             className="w-full sm:w-auto border-2 border-white/30 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-base lg:text-lg flex items-center justify-center gap-2 hover:bg-white/10 transition-all backdrop-blur-sm"
           >
             <Download className="w-4 h-4 sm:w-5 sm:h-5" /> Download CV
-          </motion.button>
+          </motion.a>
         </motion.div>
 
         {/* Social Links */}
@@ -193,21 +265,21 @@ const HeroSection = () => (
         >
           <motion.a
             whileHover={{ scale: 1.2, rotate: 5 }}
-            href="https://github.com"
+            href="https://github.com/Saif2841"
             className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all"
           >
             <Github className="w-5 h-5 sm:w-6 sm:h-6" />
           </motion.a>
           <motion.a
             whileHover={{ scale: 1.2, rotate: 5 }}
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/seif-eddine-boussaid-24a859226/"
             className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all"
           >
             <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
           </motion.a>
           <motion.a
             whileHover={{ scale: 1.2, rotate: 5 }}
-            href="mailto:contact@example.com"
+            href="mailto:bousaidsaiif@gmail.com"
             className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all"
           >
             <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -236,14 +308,6 @@ const HeroSection = () => (
 
 // About Section
 const AboutSection = () => {
-  const skills = [
-    { name: "Frontend Development", icon: Code, level: 95 },
-    { name: "UI/UX Design", icon: Palette, level: 90 },
-    { name: "Backend Development", icon: Database, level: 85 },
-    { name: "Mobile Development", icon: Smartphone, level: 80 },
-    { name: "Web Development", icon: Globe, level: 95 },
-  ];
-
   return (
     <section id="about" className="py-16 sm:py-20 lg:py-24 bg-black/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -258,11 +322,11 @@ const AboutSection = () => {
             About <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">Me</span>
           </h2>
           <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4">
-            Passionate developer with a love for creating beautiful, functional, and user-friendly applications
+            I'm <span className="font-semibold text-white">BOUSSAID Seif Eddine</span>, an Engineering student at <span className="font-semibold text-white">ESPRIT (Tunisia)</span> passionate about building delightful, high-performance digital experiences.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -270,12 +334,12 @@ const AboutSection = () => {
             viewport={{ once: true }}
             className="space-y-6 order-2 lg:order-1"
           >
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6">My Story</h3>
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6">A bit about me</h3>
             <p className="text-gray-300 leading-relaxed text-sm sm:text-base lg:text-lg">
-              I'm a passionate developer with over 5 years of experience in creating digital solutions that make a difference. I specialize in modern web technologies and love turning complex problems into simple, beautiful designs.
+              I love working across the stack with React, Next.js and TypeScript, and I enjoy crafting clean UI with motion and accessibility in mind. At ESPRIT, I focus on engineering fundamentals while building real-world projects.
             </p>
             <p className="text-gray-300 leading-relaxed text-sm sm:text-base lg:text-lg">
-              When I'm not coding, you can find me exploring new technologies, contributing to open source projects, or sharing knowledge with the community.
+              Outside of school and code, I explore new tech, iterate on side projects, and collaborate with peers on ideas that ship.
             </p>
           </motion.div>
 
@@ -284,35 +348,20 @@ const AboutSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-4 sm:space-y-6 order-1 lg:order-2"
+            className="order-1 lg:order-2"
           >
-            {skills.map((skill, index) => (
-              <motion.div
-                key={skill.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="space-y-2"
-              >
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <skill.icon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
-                    <span className="font-medium text-sm sm:text-base">{skill.name}</span>
-                  </div>
-                  <span className="text-xs sm:text-sm text-gray-400">{skill.level}%</span>
+            <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-800">
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base">
+                <div>
+                  <dt className="text-gray-400">Full Name</dt>
+                  <dd className="text-white font-medium">Boussaid Seif Eddine</dd>
                 </div>
-                <div className="w-full bg-gray-800 rounded-full h-2">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.level}%` }}
-                    transition={{ duration: 1, delay: index * 0.1 + 0.5 }}
-                    viewport={{ once: true }}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full"
-                  />
+                <div>
+                  <dt className="text-gray-400">Education</dt>
+                  <dd className="text-white font-medium">Engineering student, ESPRIT (Tunisia)</dd>
                 </div>
-              </motion.div>
-            ))}
+              </dl>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -324,24 +373,17 @@ const AboutSection = () => {
 const ProjectsSection = () => {
   const projects = [
     {
-      name: "E-Commerce Platform",
-      description: "A full-stack e-commerce solution with modern UI and advanced features",
-      link: "#",
-      tech: ["Next.js", "TypeScript", "Stripe", "PostgreSQL"],
+      name: "Aiesec Application",
+      description: "A full-stack application with modern UI and advanced features",
+      link: "https://github.com/Saif2841/Natco2k22",
+      tech: ["Java", "XML", "Firebase", "Git"],
       featured: true
     },
     {
-      name: "AI Dashboard",
-      description: "Real-time analytics dashboard with AI-powered insights",
-      link: "#",
-      tech: ["React", "Python", "TensorFlow", "D3.js"],
-      featured: true
-    },
-    {
-      name: "Mobile Banking App",
-      description: "Secure mobile banking application with biometric authentication",
-      link: "#",
-      tech: ["React Native", "Node.js", "MongoDB", "JWT"],
+      name: "fittracker Platform",
+      description: "A fitness tracking web app with user authentication and data visualization",
+      link: "https://github.com/ghofrane-jendoubi/fittracker",
+      tech: ["Symfony", "Node.js", "Firebase", "Git"],
       featured: false
     },
   ];
@@ -496,7 +538,7 @@ const ContactSection = () => {
                 </div>
                 <div className="min-w-0">
                   <p className="font-medium text-sm sm:text-base">Email</p>
-                  <p className="text-gray-300 text-sm sm:text-base truncate">contact@example.com</p>
+                  <p className="text-gray-300 text-sm sm:text-base truncate">bousaidsaiif@gmail.com</p>
                 </div>
               </motion.div>
 
@@ -509,7 +551,7 @@ const ContactSection = () => {
                 </div>
                 <div className="min-w-0">
                   <p className="font-medium text-sm sm:text-base">Phone</p>
-                  <p className="text-gray-300 text-sm sm:text-base">+1 (555) 123-4567</p>
+                  <p className="text-gray-300 text-sm sm:text-base">+216 90 432 614</p>
                 </div>
               </motion.div>
 
@@ -522,7 +564,7 @@ const ContactSection = () => {
                 </div>
                 <div className="min-w-0">
                   <p className="font-medium text-sm sm:text-base">Location</p>
-                  <p className="text-gray-300 text-sm sm:text-base">San Francisco, CA</p>
+                  <p className="text-gray-300 text-sm sm:text-base">Tunisie</p>
                 </div>
               </motion.div>
             </div>
@@ -627,26 +669,26 @@ const Footer = () => (
             Let's Build Something Amazing
           </h3>
           <p className="text-gray-400 text-sm sm:text-base">
-            © {new Date().getFullYear()} Portfolio. All rights reserved.
+            © {new Date().getFullYear()} Boussaid Seif Eddine. All rights reserved.
           </p>
           <div className="flex justify-center space-x-4 sm:space-x-6">
             <motion.a
               whileHover={{ scale: 1.2 }}
-              href="https://github.com"
+              href="https://github.com/Saif2841"
               className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
             >
               <Github className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.a>
             <motion.a
               whileHover={{ scale: 1.2 }}
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/seif-eddine-boussaid-24a859226/"
               className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
             >
               <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.a>
             <motion.a
               whileHover={{ scale: 1.2 }}
-              href="mailto:contact@example.com"
+              href="mailto:bousaidsaiif@gmail.com"
               className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
             >
               <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -658,81 +700,7 @@ const Footer = () => (
   </footer>
 );
 
-// Skills Section (Additional section for better organization)
-const SkillsSection = () => {
-  const skillCategories = [
-    {
-      title: "Frontend",
-      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-      icon: Code,
-      color: "from-blue-500 to-purple-500"
-    },
-    {
-      title: "Backend",
-      skills: ["Node.js", "Python", "PostgreSQL", "MongoDB", "GraphQL"],
-      icon: Database,
-      color: "from-green-500 to-teal-500"
-    },
-    {
-      title: "Mobile",
-      skills: ["React Native", "Flutter", "iOS", "Android", "Expo"],
-      icon: Smartphone,
-      color: "from-pink-500 to-rose-500"
-    },
-    {
-      title: "Design",
-      skills: ["Figma", "Adobe XD", "Photoshop", "Illustrator", "Sketch"],
-      icon: Palette,
-      color: "from-purple-500 to-indigo-500"
-    }
-  ];
-
-  return (
-    <section id="skills" className="py-16 sm:py-20 lg:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-12 sm:mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            My <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">Skills</span>
-          </h2>
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4">
-            Technologies and tools I use to bring ideas to life
-          </p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {skillCategories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-4 sm:p-6 border border-gray-800 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 group"
-            >
-              <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r ${category.color} flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>
-                <category.icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">{category.title}</h3>
-              <div className="space-y-2">
-                {category.skills.map((skill) => (
-                  <div key={skill} className="text-gray-300 text-sm sm:text-base py-1">
-                    {skill}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+// (Skills section removed as per new design)
 
 // Main Page
 export default function Home() {
