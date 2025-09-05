@@ -1,103 +1,750 @@
-import Image from "next/image";
+"use client";
 
+import { motion } from "framer-motion";
+import {
+  Github, Linkedin, Mail, Phone, MapPin, Download,
+  Code, Palette, Database, Smartphone, Globe, ArrowRight,
+  Star, ExternalLink, ChevronDown, Send, Menu, X
+} from "lucide-react";
+import { useState, useEffect } from "react";
+
+// Floating Particles Component
+const FloatingParticles = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+          style={{ left: `${(i * 7) % 100}%`, top: `${(i * 11) % 100}%` }}
+          animate={{
+            y: [0, -100, -200, -300],
+            x: [0, (i * 5) % 100 - 50],
+            opacity: [0, 1, 1, 0],
+            scale: [0, 1, 1, 0]
+          }}
+          transition={{
+            duration: (i % 8) + 8,
+            repeat: Infinity,
+            delay: i % 3,
+            ease: "easeOut"
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Navigation
+const Navigation = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = ["Home", "About", "Projects", "Skills", "Contact"];
+
+  return (
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled
+        ? "bg-black/90 backdrop-blur-xl border-b border-white/10"
+        : "bg-transparent"
+        }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-3 sm:py-4">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="text-lg sm:text-xl lg:text-2xl font-bold"
+          >
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
+              Portfolio
+            </span>
+          </motion.div>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex space-x-6 lg:space-x-8">
+            {navItems.map(item => (
+              <motion.a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                whileHover={{ scale: 1.1 }}
+                className="text-gray-300 hover:text-white transition-colors text-sm lg:text-base"
+              >
+                {item}
+              </motion.a>
+            ))}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        animate={{
+          opacity: isMobileMenuOpen ? 1 : 0,
+          height: isMobileMenuOpen ? "auto" : 0
+        }}
+        transition={{ duration: 0.3 }}
+        className="md:hidden overflow-hidden bg-black/95 backdrop-blur-xl"
+      >
+        <div className="py-4 space-y-2 px-4">
+          {navItems.map(item => (
+            <motion.a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              whileHover={{ x: 10 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block text-gray-300 hover:text-white text-base py-2 px-2 rounded-lg hover:bg-white/10 transition-all"
+            >
+              {item}
+            </motion.a>
+          ))}
+        </div>
+      </motion.div>
+    </motion.nav>
+  );
+};
+
+// Hero Section
+const HeroSection = () => (
+  <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    {/* Animated Background */}
+    <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-900/20 to-blue-900/20 animate-pulse"></div>
+    <FloatingParticles />
+
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 py-20">
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="space-y-6 sm:space-y-8"
+      >
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight"
+        >
+          <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
+            Creative
+          </span>
+          <span className="block text-white">Developer</span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4"
+        >
+          Building amazing digital experiences with modern technologies and creative solutions
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-base lg:text-lg flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
+          >
+            View My Work <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full sm:w-auto border-2 border-white/30 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-base lg:text-lg flex items-center justify-center gap-2 hover:bg-white/10 transition-all backdrop-blur-sm"
+          >
+            <Download className="w-4 h-4 sm:w-5 sm:h-5" /> Download CV
+          </motion.button>
+        </motion.div>
+
+        {/* Social Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="flex justify-center space-x-6 pt-8"
+        >
+          <motion.a
+            whileHover={{ scale: 1.2, rotate: 5 }}
+            href="https://github.com"
+            className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all"
+          >
+            <Github className="w-5 h-5 sm:w-6 sm:h-6" />
+          </motion.a>
+          <motion.a
+            whileHover={{ scale: 1.2, rotate: 5 }}
+            href="https://linkedin.com"
+            className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all"
+          >
+            <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
+          </motion.a>
+          <motion.a
+            whileHover={{ scale: 1.2, rotate: 5 }}
+            href="mailto:contact@example.com"
+            className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all"
+          >
+            <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
+          </motion.a>
+        </motion.div>
+      </motion.div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-white/60"
+        >
+          <ChevronDown className="w-6 h-6" />
+        </motion.div>
+      </motion.div>
+    </div>
+  </section>
+);
+
+// About Section
+const AboutSection = () => {
+  const skills = [
+    { name: "Frontend Development", icon: Code, level: 95 },
+    { name: "UI/UX Design", icon: Palette, level: 90 },
+    { name: "Backend Development", icon: Database, level: 85 },
+    { name: "Mobile Development", icon: Smartphone, level: 80 },
+    { name: "Web Development", icon: Globe, level: 95 },
+  ];
+
+  return (
+    <section id="about" className="py-16 sm:py-20 lg:py-24 bg-black/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-12 sm:mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            About <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">Me</span>
+          </h2>
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4">
+            Passionate developer with a love for creating beautiful, functional, and user-friendly applications
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="space-y-6 order-2 lg:order-1"
+          >
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6">My Story</h3>
+            <p className="text-gray-300 leading-relaxed text-sm sm:text-base lg:text-lg">
+              I'm a passionate developer with over 5 years of experience in creating digital solutions that make a difference. I specialize in modern web technologies and love turning complex problems into simple, beautiful designs.
+            </p>
+            <p className="text-gray-300 leading-relaxed text-sm sm:text-base lg:text-lg">
+              When I'm not coding, you can find me exploring new technologies, contributing to open source projects, or sharing knowledge with the community.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="space-y-4 sm:space-y-6 order-1 lg:order-2"
+          >
+            {skills.map((skill, index) => (
+              <motion.div
+                key={skill.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="space-y-2"
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <skill.icon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
+                    <span className="font-medium text-sm sm:text-base">{skill.name}</span>
+                  </div>
+                  <span className="text-xs sm:text-sm text-gray-400">{skill.level}%</span>
+                </div>
+                <div className="w-full bg-gray-800 rounded-full h-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${skill.level}%` }}
+                    transition={{ duration: 1, delay: index * 0.1 + 0.5 }}
+                    viewport={{ once: true }}
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full"
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Projects Section
+const ProjectsSection = () => {
+  const projects = [
+    {
+      name: "E-Commerce Platform",
+      description: "A full-stack e-commerce solution with modern UI and advanced features",
+      link: "#",
+      tech: ["Next.js", "TypeScript", "Stripe", "PostgreSQL"],
+      featured: true
+    },
+    {
+      name: "AI Dashboard",
+      description: "Real-time analytics dashboard with AI-powered insights",
+      link: "#",
+      tech: ["React", "Python", "TensorFlow", "D3.js"],
+      featured: true
+    },
+    {
+      name: "Mobile Banking App",
+      description: "Secure mobile banking application with biometric authentication",
+      link: "#",
+      tech: ["React Native", "Node.js", "MongoDB", "JWT"],
+      featured: false
+    },
+  ];
+
+  return (
+    <section id="projects" className="py-16 sm:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-12 sm:mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            My <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">Projects</span>
+          </h2>
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4">
+            Here are some of the projects I've worked on recently. They showcase my skills in web and mobile development.
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {projects.map((proj, index) => (
+            <motion.div
+              key={proj.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="group relative bg-gray-900/50 rounded-2xl overflow-hidden backdrop-blur-xl border border-gray-800 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300"
+            >
+              {proj.featured && (
+                <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-10">
+                  <span className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4" /> Featured
+                  </span>
+                </div>
+              )}
+
+              <div className="aspect-video bg-gradient-to-br from-purple-900/20 to-blue-900/20 flex items-center justify-center">
+                <Code className="w-12 h-12 sm:w-16 sm:h-16 text-purple-500" />
+              </div>
+
+              <div className="p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
+                  {proj.name}
+                </h3>
+                <p className="text-gray-300 mb-3 sm:mb-4 text-sm sm:text-base leading-relaxed">
+                  {proj.description}
+                </p>
+                <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
+                  {proj.tech.map(tech => (
+                    <span
+                      key={tech}
+                      className="px-2 sm:px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-3 sm:gap-4">
+                  <motion.a
+                    whileHover={{ scale: 1.05 }}
+                    href={proj.link}
+                    className="flex items-center gap-1 sm:gap-2 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm"
+                  >
+                    <Github className="w-3 h-3 sm:w-4 sm:h-4" /> Code
+                  </motion.a>
+                  <motion.a
+                    whileHover={{ scale: 1.05 }}
+                    href={proj.link}
+                    className="flex items-center gap-1 sm:gap-2 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm"
+                  >
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" /> Live Demo
+                  </motion.a>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Contact Section
+const ContactSection = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    console.log("Form submitted:", formData);
+    setIsSubmitting(false);
+
+    // Reset form
+    setFormData({ name: "", email: "", subject: "", message: "" });
+  };
+
+  return (
+    <section id="contact" className="py-16 sm:py-20 lg:py-24 bg-black/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-12 sm:mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            Get In <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">Touch</span>
+          </h2>
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4">
+            Ready to work together? Let's discuss your next project
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="space-y-6 sm:space-y-8"
+          >
+            <div>
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6">Let's Connect</h3>
+              <p className="text-gray-300 mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg leading-relaxed">
+                I'm always interested in new opportunities and exciting projects. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+              </p>
+            </div>
+
+            <div className="space-y-4 sm:space-y-6">
+              <motion.div
+                whileHover={{ x: 10 }}
+                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-white/5 transition-all"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium text-sm sm:text-base">Email</p>
+                  <p className="text-gray-300 text-sm sm:text-base truncate">contact@example.com</p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ x: 10 }}
+                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-white/5 transition-all"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium text-sm sm:text-base">Phone</p>
+                  <p className="text-gray-300 text-sm sm:text-base">+1 (555) 123-4567</p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ x: 10 }}
+                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-white/5 transition-all"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium text-sm sm:text-base">Location</p>
+                  <p className="text-gray-300 text-sm sm:text-base">San Francisco, CA</p>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          <motion.form
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            onSubmit={handleSubmit}
+            className="space-y-4 sm:space-y-6"
+          >
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all text-white placeholder-gray-400 text-sm sm:text-base backdrop-blur-sm"
+                  placeholder="Your name"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all text-white placeholder-gray-400 text-sm sm:text-base backdrop-blur-sm"
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-300">Subject</label>
+              <input
+                type="text"
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all text-white placeholder-gray-400 text-sm sm:text-base backdrop-blur-sm"
+                placeholder="What's this about?"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-300">Message</label>
+              <textarea
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                rows={5}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all resize-none text-white placeholder-gray-400 text-sm sm:text-base backdrop-blur-sm"
+                placeholder="Your message"
+                required
+              />
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 sm:py-4 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-50 text-sm sm:text-base"
+            >
+              {isSubmitting ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full"
+                  />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 sm:w-5 sm:h-5" /> Send Message
+                </>
+              )}
+            </motion.button>
+          </motion.form>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Footer
+const Footer = () => (
+  <footer className="py-8 sm:py-12 bg-black border-t border-gray-800">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="space-y-4 sm:space-y-6"
+        >
+          <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
+            Let's Build Something Amazing
+          </h3>
+          <p className="text-gray-400 text-sm sm:text-base">
+            © {new Date().getFullYear()} Portfolio. All rights reserved.
+          </p>
+          <div className="flex justify-center space-x-4 sm:space-x-6">
+            <motion.a
+              whileHover={{ scale: 1.2 }}
+              href="https://github.com"
+              className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+            >
+              <Github className="w-5 h-5 sm:w-6 sm:h-6" />
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.2 }}
+              href="https://linkedin.com"
+              className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+            >
+              <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.2 }}
+              href="mailto:contact@example.com"
+              className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+            >
+              <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
+            </motion.a>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  </footer>
+);
+
+// Skills Section (Additional section for better organization)
+const SkillsSection = () => {
+  const skillCategories = [
+    {
+      title: "Frontend",
+      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      icon: Code,
+      color: "from-blue-500 to-purple-500"
+    },
+    {
+      title: "Backend",
+      skills: ["Node.js", "Python", "PostgreSQL", "MongoDB", "GraphQL"],
+      icon: Database,
+      color: "from-green-500 to-teal-500"
+    },
+    {
+      title: "Mobile",
+      skills: ["React Native", "Flutter", "iOS", "Android", "Expo"],
+      icon: Smartphone,
+      color: "from-pink-500 to-rose-500"
+    },
+    {
+      title: "Design",
+      skills: ["Figma", "Adobe XD", "Photoshop", "Illustrator", "Sketch"],
+      icon: Palette,
+      color: "from-purple-500 to-indigo-500"
+    }
+  ];
+
+  return (
+    <section id="skills" className="py-16 sm:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-12 sm:mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            My <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">Skills</span>
+          </h2>
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto px-4">
+            Technologies and tools I use to bring ideas to life
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          {skillCategories.map((category, index) => (
+            <motion.div
+              key={category.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-4 sm:p-6 border border-gray-800 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 group"
+            >
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r ${category.color} flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>
+                <category.icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">{category.title}</h3>
+              <div className="space-y-2">
+                {category.skills.map((skill) => (
+                  <div key={skill} className="text-gray-300 text-sm sm:text-base py-1">
+                    {skill}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Main Page
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      <Navigation />
+      <HeroSection />
+      <AboutSection />
+      <SkillsSection />
+      <ProjectsSection />
+      <ContactSection />
+      <Footer />
     </div>
   );
 }
