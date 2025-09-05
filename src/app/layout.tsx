@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://yourwebsite.com'),
   title: "Portfolio | Creative Developer",
   description: "Modern portfolio showcasing creative work, professional skills, and innovative digital solutions. Specializing in React, Next.js, TypeScript, and modern web technologies.",
   keywords: [
